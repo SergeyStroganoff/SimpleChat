@@ -21,7 +21,7 @@ public class MultiThreadServer {
 
     private static final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(50);
     Logger logger = Logger.getLogger(MultiThreadServer.class);
-    public static final List<MonoThreadServer> serverList = Collections.synchronizedList(new LinkedList<>()); // Нужен синхронизированный доступ
+    public static final List<MonoThreadServer> serverList = Collections.synchronizedList(new LinkedList<>()); // We can use ConcurrentHashMap
 
     public boolean startServer() {
         try (ServerSocket server = new ServerSocket(3180);
