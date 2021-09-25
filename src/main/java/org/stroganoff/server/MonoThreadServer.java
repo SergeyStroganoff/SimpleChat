@@ -46,9 +46,7 @@ public class MonoThreadServer implements Runnable {
                 // main work here
                 System.out.println(inputMessage);
                 stringBuilder.append(inputMessage);
-                for (MonoThreadServer monoThreadServer : MultiThreadServer.serverList) {
-                    monoThreadServer.sendMessage(stringBuilder.toString()); // Отослать принятое сообщение всем по списку
-                }
+                sendMessageForAllClient(stringBuilder.toString());
                 stringBuilder.delete(nikNameClient.length() + 5, stringBuilder.length());
             }
         } catch (IOException e) {
@@ -63,6 +61,14 @@ public class MonoThreadServer implements Runnable {
             }
             logger.info(CLOSING_SERVER_MESSAGE);
             MultiThreadServer.serverList.remove(this);
+        }
+    }
+
+    private void sendMessageForAllClient(String inputMessage) throws IOException {
+        synchronized (MultiThreadServer.serverList) {
+            for (MonoThreadServer monoThreadServer : MultiThreadServer.serverList) {
+                monoThreadServer.sendMessage(inputMessage); // Отослать принятое сообщение всем по списку
+            }
         }
     }
 
