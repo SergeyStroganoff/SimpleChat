@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.stroganoff.IUserInterface;
+import org.stroganoff.UserInterface;
+
 public class MultiThreadServer {
     private static final String CONNECTION_ACCEPTED_MESSAGE = "Connection accepted with ";
     private static final String SOCKET_ERROR_CONNECTION = "Fixed ServerSocket error connection";
@@ -21,6 +24,7 @@ public class MultiThreadServer {
     private final Logger logger = Logger.getLogger(MultiThreadServer.class);
     protected static final List<MonoThreadServer> serverList = Collections.synchronizedList(new LinkedList<>()); // We can use ConcurrentHashMap
     private final int portNumber;
+    private IUserInterface userInterface = new UserInterface();
 
     public MultiThreadServer(int portNumber) {
         this.portNumber = portNumber;
@@ -31,10 +35,11 @@ public class MultiThreadServer {
         try (ServerSocket server = new ServerSocket(portNumber);
              BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             logger.info(SERVER_START_MESSAGE);
+            userInterface.showUserMessage(SERVER_START_MESSAGE);
+            userInterface.showUserMessage("Для выхода введите - exit");
             while (!server.isClosed()) {
                 ConsoleListener consoleListener = new ConsoleListener(server, br);
                 consoleListener.startListening();
-
                 Socket client = server.accept();
                 logger.debug("client" + client.getInetAddress());
                 MonoThreadServer monoThreadServer = new MonoThreadServer(client);

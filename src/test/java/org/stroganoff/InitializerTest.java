@@ -1,24 +1,40 @@
 package org.stroganoff;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.stroganoff.exception.PropertiesException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InitializerTest {
 
     Initializer initializer = new Initializer();
+    Properties properties;
 
-    @Test
-    void getAppProperties() {
+    @BeforeEach
+    void init() throws PropertiesException, IOException {
+        properties = initializer.getAppProp();
     }
 
     @Test
-    void getPropPath() {
+    void getAppProp() throws IOException, PropertiesException {
         //GIVEN
-        String expected = "M:\\PROGRAMMING\\EPAM\\EDUCATION\\Multithreating\\SimpleChat\\src\\main\\resources\\app.properties";
+        int expectedPort = 3128;
         //WHEN
-        String actual = initializer.getPropPath();
-        // THEN
-        assertEquals(expected, actual);
+        int actualPort = Integer.parseInt(properties.getProperty("port"));
+        //THEN
+        assertEquals(expectedPort, actualPort);
+    }
+
+    @Test
+    void propertyVerify() {
+        //WHEN
+        boolean actual = initializer.propertyVerify(properties);
+        //THEN
+        assertTrue(actual);
     }
 }

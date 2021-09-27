@@ -2,6 +2,7 @@ package org.stroganoff;
 
 import org.apache.log4j.Logger;
 import org.stroganoff.client.Client;
+import org.stroganoff.exception.PropertiesException;
 import org.stroganoff.server.MultiThreadServer;
 
 import java.io.BufferedReader;
@@ -11,7 +12,6 @@ import java.util.Properties;
 
 public class App {
     public static final Logger logger = Logger.getLogger(App.class);
-    public static final String FILE_PROP_ERROR_LOGGER = "File properties loading error";
     public static final String FILE_PROP_ERROR_USER = "файл настроек отсутствует или поврежден";
 
     public static void main(String[] args) throws InterruptedException {
@@ -20,8 +20,8 @@ public class App {
         Properties properties = null;
         try {
             properties = initializer.getAppProp();
-        } catch (IOException e) {
-            logger.error(FILE_PROP_ERROR_LOGGER, e);
+        } catch (IOException | PropertiesException e) {
+            logger.error(e.getMessage(), e);
             userInterface.showErrorMessage(FILE_PROP_ERROR_USER);
             userInterface.showUserMessage("Программа будет завершена");
             Thread.sleep(5000);
