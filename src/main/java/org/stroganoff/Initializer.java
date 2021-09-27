@@ -3,19 +3,17 @@ package org.stroganoff;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class Initializer {
-    public static final String PROP_PATH = "src/org.stroganoff/resources/app.properties";   //"\\src\\test\\resources\\fileForTest";
+    public static final String APP_PROPERTIES = "/app.properties";
 
-    public Properties getAppProperties() throws IOException {
-        String rootPath = new File("").getAbsolutePath();
-        String filePath = rootPath + PROP_PATH;
-        File file = new File(filePath);
+    public Properties getAppProp() throws IOException {
+        InputStream inputStream = App.class.getResourceAsStream(APP_PROPERTIES);
         Properties properties = new Properties();
-        FileReader fileReader = new FileReader(file);
-        properties.load(fileReader);
-        fileReader.close();
+        properties.load(inputStream);
         return properties;
     }
+
 }

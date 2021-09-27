@@ -18,12 +18,17 @@ public class MultiThreadServer {
     private static final String SOCKET_ERROR_CONNECTION = "Fixed ServerSocket error connection";
     private static final String SERVER_START_MESSAGE = "Server socket created, and listen to server commands";
     private static final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(50);
-    Logger logger = Logger.getLogger(MultiThreadServer.class);
+    private final Logger logger = Logger.getLogger(MultiThreadServer.class);
     protected static final List<MonoThreadServer> serverList = Collections.synchronizedList(new LinkedList<>()); // We can use ConcurrentHashMap
+    private final int portNumber;
+
+    public MultiThreadServer(int portNumber) {
+        this.portNumber = portNumber;
+    }
 
     public void startServer() {
 
-        try (ServerSocket server = new ServerSocket(3180);
+        try (ServerSocket server = new ServerSocket(portNumber);
              BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             logger.info(SERVER_START_MESSAGE);
             while (!server.isClosed()) {
