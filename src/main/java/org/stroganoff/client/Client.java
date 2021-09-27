@@ -1,6 +1,8 @@
 package org.stroganoff.client;
 
 import org.apache.log4j.Logger;
+import org.stroganoff.IUserInterface;
+import org.stroganoff.UserInterface;
 
 import java.io.*;
 import java.net.Socket;
@@ -12,6 +14,8 @@ public class Client {
     private final int portNumber;
     private final Logger logger = Logger.getLogger(Client.class);
     private final String nickName;
+    private final IUserInterface userInterface = new UserInterface();
+
 
     public Client(String host, int portNumber, String nickName) {
         this.host = host;
@@ -30,7 +34,7 @@ public class Client {
              DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
              DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());) {
             logger.info(CLIENT_SUCCESSFULLY_CONNECTED_MESSAGE);
-            System.out.println(CLIENT_SUCCESSFULLY_CONNECTED_MESSAGE);
+            userInterface.showUserMessage(CLIENT_SUCCESSFULLY_CONNECTED_MESSAGE);
 
             while (!socket.isOutputShutdown()) {
                 if (dataInputStream.read() > -1) {
@@ -39,7 +43,7 @@ public class Client {
                         dataOutputStream.writeUTF(nickName);
                         dataOutputStream.flush();
                     }
-                    System.out.println(inputStringFromServer);
+                    userInterface.showUserMessage(inputStringFromServer);
                     logger.debug(CLIENT_GOT_THE_MESSAGE + inputStringFromServer);
                 }
 
@@ -55,7 +59,7 @@ public class Client {
                         logger.info("Client commanded to kill connections");
                         if (dataInputStream.read() > -1) {
                             String in = dataInputStream.readUTF();
-                            System.out.println(in);
+                            userInterface.showUserMessage(in);
                         }
                         break;
                     }
@@ -64,6 +68,7 @@ public class Client {
             logger.info("Closing connections & channels on clentSide - DONE.");
         } catch (IOException | InterruptedException e) {
             logger.error("Client has got an error", e);
+            userInterface.showErrorMessage(e.getMessage());
         }
     }
 }
