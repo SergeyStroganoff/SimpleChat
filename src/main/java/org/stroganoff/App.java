@@ -6,11 +6,13 @@ import org.stroganoff.server.MultiThreadServer;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 
 public class App {
     public static final Logger logger = Logger.getLogger(App.class);
 
     public static void main(String[] args) {
+
         IUserInterface userInterface = new UserInterface();
         userInterface.showUserMessage("Введите 1 для запуска сервера и 2 для запуска клиента");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -27,6 +29,7 @@ public class App {
                 isCommandGotten = true;
                 userInterface.showUserMessage("Введите Ваш никнейм");
                 String userNickName = userInterface.getStringFromUser(bufferedReader);
+                InetAddress ipAddress = InetAddress.getByName(address);
                 Client client = new Client(3180, userNickName);
                 client.clientStart();
             }

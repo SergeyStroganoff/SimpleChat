@@ -13,10 +13,10 @@ public class MonoThreadServer implements Runnable {
     public static final String CREATED_MONO_SERVER_MESSAGE = "DataInputStream && DataOutputStream created. MonoServer ";
     private final Logger logger = Logger.getLogger(MonoThreadServer.class);
     private final Socket threadSocket;
+    private final StringBuilder stringBuilder = new StringBuilder();
     private DataOutputStream out;
     private DataInputStream in;
     private String nikNameClient;
-    private final StringBuilder stringBuilder = new StringBuilder();
 
     public MonoThreadServer(Socket threadSocket) {
         this.threadSocket = threadSocket;

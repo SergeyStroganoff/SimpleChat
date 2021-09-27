@@ -17,6 +17,7 @@ public class Client {
     private final IUserInterface userInterface = new UserInterface();
 
 
+
     public Client(String host, int portNumber, String nickName) {
         this.host = host;
         this.portNumber = portNumber;
@@ -66,8 +67,11 @@ public class Client {
                 }
             }
             logger.info("Closing connections & channels on clentSide - DONE.");
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             logger.error("Client has got an error", e);
+            userInterface.showErrorMessage(e.getMessage());
+        } catch (InterruptedException e) {
+            logger.error("Ожидание потока прервано", e);
             userInterface.showErrorMessage(e.getMessage());
         }
     }
