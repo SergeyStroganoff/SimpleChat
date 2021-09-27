@@ -1,11 +1,14 @@
 package org.stroganoff;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public class UserInterface implements IUserInterface {
-
+    public static final Logger logger = Logger.getLogger(UserInterface.class);
     public static final String ERROR_MESSAGE = "Произошла ошибка: ";
+    public static final String INPUT_ERROR_LOG_MESSAGE = "Произошла ошибка при считывании команды с консоли";
 
     @Override
     public String getStringFromUser(BufferedReader reader) {
@@ -13,7 +16,8 @@ public class UserInterface implements IUserInterface {
         try {
             expressionString = reader.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(INPUT_ERROR_LOG_MESSAGE, e);
+            showErrorMessage("при вводе с консоли");
         }
         return expressionString;
     }
