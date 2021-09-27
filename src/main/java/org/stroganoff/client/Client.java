@@ -17,7 +17,6 @@ public class Client {
     private final IUserInterface userInterface = new UserInterface();
 
 
-
     public Client(String host, int portNumber, String nickName) {
         this.host = host;
         this.portNumber = portNumber;
@@ -38,14 +37,16 @@ public class Client {
             userInterface.showUserMessage(CLIENT_SUCCESSFULLY_CONNECTED_MESSAGE);
 
             while (!socket.isOutputShutdown()) {
-                if (dataInputStream.read() > -1) {
+                if (dataInputStream.available() > 0) {
+                    System.out.println("Есть поток");
                     String inputStringFromServer = dataInputStream.readUTF();
                     if ("GetNickName".equals(inputStringFromServer)) {
+                        userInterface.showUserMessage("От сервера поступил запрос: " + inputStringFromServer);
+                        logger.debug(CLIENT_GOT_THE_MESSAGE + inputStringFromServer);
                         dataOutputStream.writeUTF(nickName);
                         dataOutputStream.flush();
                     }
                     userInterface.showUserMessage(inputStringFromServer);
-                    logger.debug(CLIENT_GOT_THE_MESSAGE + inputStringFromServer);
                 }
 
                 if (reader.ready()) {
@@ -58,7 +59,7 @@ public class Client {
                     // проверяем условие выхода из соединения
                     if ("quit".equalsIgnoreCase(clientCommand) || "exit".equalsIgnoreCase(clientCommand)) {
                         logger.info("Client commanded to kill connections");
-                        if (dataInputStream.read() > -1) {
+                        if (dataInputStream.available() > 0) {
                             String in = dataInputStream.readUTF();
                             userInterface.showUserMessage(in);
                         }
@@ -68,7 +69,7 @@ public class Client {
             }
             logger.info("Closing connections & channels on clentSide - DONE.");
         } catch (IOException e) {
-            logger.error("Client has got an error", e);
+            logger.error("Client has got an error " + e.getMessage(), e);
             userInterface.showErrorMessage(e.getMessage());
         } catch (InterruptedException e) {
             logger.error("Ожидание потока прервано", e);

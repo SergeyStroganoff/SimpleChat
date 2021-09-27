@@ -33,6 +33,7 @@ public class MonoThreadServer implements Runnable {
             in = new DataInputStream(threadSocket.getInputStream());
             // канал записи в сокет следует инициализировать сначала канал чтения для избежания блокировки выполнения программы на ожидании заголовка в сокете
             logger.debug(CREATED_MONO_SERVER_MESSAGE + threadSocket.getInetAddress().getHostAddress() + " is ready ");
+            Thread.sleep(500);
             sendMessage("GetNickName");
             nikNameClient = in.readUTF();
             stringBuilder.append("[").append(nikNameClient).append("]").append(" - ");
@@ -49,7 +50,7 @@ public class MonoThreadServer implements Runnable {
                 sendMessageForAllClient(stringBuilder.toString());
                 stringBuilder.delete(nikNameClient.length() + 5, stringBuilder.length());
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             logger.error("working thread" + threadSocket.getInetAddress() + "trow exception", e);
         } finally {
             try {
