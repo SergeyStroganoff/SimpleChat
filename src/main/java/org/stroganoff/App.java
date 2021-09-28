@@ -13,6 +13,9 @@ import java.util.Properties;
 public class App {
     public static final Logger logger = Logger.getLogger(App.class);
     public static final String FILE_PROP_ERROR_USER = "файл настроек отсутствует или поврежден";
+    public static final String USER_FIRST_MESSAGE = "Введите 1 для запуска сервера и 2 для запуска клиента";
+    public static final String ERROR_MESSAGE = "Программа будет завершена";
+    public static final String NICK_MESSAGE = "Введите Ваш никнейм";
 
     public static void main(String[] args) throws InterruptedException {
         IUserInterface userInterface = new UserInterface();
@@ -23,12 +26,12 @@ public class App {
         } catch (IOException | PropertiesException e) {
             logger.error(e.getMessage(), e);
             userInterface.showErrorMessage(FILE_PROP_ERROR_USER);
-            userInterface.showUserMessage("Программа будет завершена");
+            userInterface.showUserMessage(ERROR_MESSAGE);
             Thread.sleep(5000);
             System.exit(1);
         }
 
-        userInterface.showUserMessage("Введите 1 для запуска сервера и 2 для запуска клиента");
+        userInterface.showUserMessage(USER_FIRST_MESSAGE);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         String userCommand = null;
         int port = Integer.parseInt(properties.getProperty("port"));
@@ -42,7 +45,7 @@ public class App {
             }
             if ("2".equals(userCommand)) {
                 isCommandGotten = true;
-                userInterface.showUserMessage("Введите Ваш никнейм");
+                userInterface.showUserMessage(NICK_MESSAGE);
                 String userNickName = userInterface.getStringFromUser(bufferedReader);
                 String serverIP = properties.getProperty("serverIP");
                 Client client = new Client(serverIP, port, userNickName);

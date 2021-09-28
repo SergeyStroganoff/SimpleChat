@@ -32,7 +32,7 @@ public class Client {
         try (Socket socket = new Socket(host, portNumber);
              BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
              DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());) {
+             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream())) {
             logger.info(CLIENT_SUCCESSFULLY_CONNECTED_MESSAGE);
             userInterface.showUserMessage(CLIENT_SUCCESSFULLY_CONNECTED_MESSAGE);
 
@@ -40,18 +40,16 @@ public class Client {
                 if (dataInputStream.available() > 0) {
                     String inputStringFromServer = dataInputStream.readUTF();
                     if ("GetNickName".equals(inputStringFromServer)) {
-                        userInterface.showUserMessage("От сервера поступил запрос: " + inputStringFromServer);
                         logger.debug(CLIENT_GOT_THE_MESSAGE + inputStringFromServer);
-                        dataOutputStream.writeUTF(nickName);
-                        dataOutputStream.flush();
+                        sendMessage(dataOutputStream, nickName);
+                    } else {
+                        userInterface.showUserMessage(inputStringFromServer);
                     }
-                    userInterface.showUserMessage(inputStringFromServer);
                 }
 
                 if (reader.ready()) {
                     String clientCommand = reader.readLine();
-                    dataOutputStream.writeUTF(clientCommand);
-                    dataOutputStream.flush();
+                    sendMessage(dataOutputStream, clientCommand);
                     logger.debug("Client sent message " + clientCommand + " to server.");
                     Thread.sleep(500);
 
@@ -66,7 +64,7 @@ public class Client {
                     }
                 }
             }
-            logger.info("Closing connections & channels on clentSide - DONE.");
+            logger.info("Closing connections & channels on client side - DONE.");
         } catch (IOException e) {
             logger.error("Client has got an error " + e.getMessage(), e);
             userInterface.showErrorMessage(e.getMessage());
@@ -74,6 +72,11 @@ public class Client {
             logger.error("Ожидание потока прервано", e);
             userInterface.showErrorMessage(e.getMessage());
         }
+    }
+
+    private void sendMessage(DataOutputStream dataOutputStream, String message) throws IOException {
+        dataOutputStream.writeUTF(message);
+        dataOutputStream.flush();
     }
 }
 
