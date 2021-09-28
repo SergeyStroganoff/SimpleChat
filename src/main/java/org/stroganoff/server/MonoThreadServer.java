@@ -17,9 +17,11 @@ public class MonoThreadServer implements Runnable {
     private DataOutputStream out;
     private DataInputStream in;
     private String nikNameClient;
+    private History history;
 
-    public MonoThreadServer(Socket threadSocket) {
+    public MonoThreadServer(Socket threadSocket, History history) {
         this.threadSocket = threadSocket;
+        this.history = history;
     }
 
     public String getNikNameClient() {
@@ -37,8 +39,7 @@ public class MonoThreadServer implements Runnable {
             sendMessage("GetNickName");
             nikNameClient = in.readUTF();
             stringBuilder.append("[").append(nikNameClient).append("]").append(" - ");
-
-
+            sendMessage(history.getHistoryMessage(5).toString());
             while (!threadSocket.isClosed()) {
                 String inputMessage = in.readUTF();
                 if ("quit".equalsIgnoreCase(inputMessage) || "exit".equalsIgnoreCase(inputMessage)) {
@@ -47,8 +48,8 @@ public class MonoThreadServer implements Runnable {
                     break;
                 }
                 // main work here
-                System.out.println(inputMessage);
                 stringBuilder.append(inputMessage);
+                history.putMessage(stringBuilder.toString());
                 sendMessageForAllClient(stringBuilder.toString());
                 stringBuilder.delete(nikNameClient.length() + 5, stringBuilder.length());
             }

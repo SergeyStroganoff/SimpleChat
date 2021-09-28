@@ -23,7 +23,8 @@ public class MultiThreadServer {
     private final Logger logger = Logger.getLogger(MultiThreadServer.class);
     protected static final List<MonoThreadServer> serverList = Collections.synchronizedList(new LinkedList<>()); // We can use ConcurrentHashMap
     private final int portNumber;
-    private IUserInterface userInterface = new UserInterface();
+    private final IUserInterface userInterface = new UserInterface();
+    private final History history = new HistoryManager();
 
     public MultiThreadServer(int portNumber) {
         this.portNumber = portNumber;
@@ -41,7 +42,7 @@ public class MultiThreadServer {
             while (!server.isClosed()) {
                 Socket client = server.accept();
                 logger.debug("We have got a client connection" + client.getInetAddress());
-                MonoThreadServer monoThreadServer = new MonoThreadServer(client);
+                MonoThreadServer monoThreadServer = new MonoThreadServer(client, history);
                 serverList.add(monoThreadServer);
                 fixedThreadPool.execute(monoThreadServer);
                 logger.info(CONNECTION_ACCEPTED_MESSAGE + client.getInetAddress().getHostAddress());
