@@ -18,7 +18,7 @@ public class HistoryManager implements History {
         int numberOfMessage = 0;
 
         for (String message : arrayBlockingQueue) {
-            stringBuffer.append(message).append("\\n");
+            stringBuffer.append(message).append("\n");
             numberOfMessage++;
             if (numberOfMessage >= count) {
                 break;

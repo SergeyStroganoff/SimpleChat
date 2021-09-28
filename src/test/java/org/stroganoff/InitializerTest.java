@@ -21,7 +21,7 @@ class InitializerTest {
     }
 
     @Test
-    void getAppProp() throws IOException, PropertiesException {
+    void getAppProp_Return_Expected_Port() {
         //GIVEN
         int expectedPort = 3128;
         //WHEN
@@ -31,7 +31,7 @@ class InitializerTest {
     }
 
     @Test
-    void propertyVerify() {
+    void propertyVerify_Must_Return_True() {
         //WHEN
         boolean actual = initializer.propertyVerify(properties);
         //THEN
