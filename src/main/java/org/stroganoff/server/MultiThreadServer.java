@@ -1,6 +1,8 @@
 package org.stroganoff.server;
 
 import org.apache.log4j.Logger;
+import org.stroganoff.IUserInterface;
+import org.stroganoff.UserInterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,9 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.stroganoff.IUserInterface;
-import org.stroganoff.UserInterface;
 
 public class MultiThreadServer {
     private static final String CONNECTION_ACCEPTED_MESSAGE = "Connection accepted with ";
@@ -37,11 +36,11 @@ public class MultiThreadServer {
             logger.info(SERVER_START_MESSAGE);
             userInterface.showUserMessage(SERVER_START_MESSAGE);
             userInterface.showUserMessage("Для выхода введите - exit");
+            ConsoleListener consoleListener = new ConsoleListener(server, br);
+            consoleListener.startListening();
             while (!server.isClosed()) {
-                ConsoleListener consoleListener = new ConsoleListener(server, br);
-                consoleListener.startListening();
                 Socket client = server.accept();
-                logger.debug("client" + client.getInetAddress());
+                logger.debug("We have got a client connection" + client.getInetAddress());
                 MonoThreadServer monoThreadServer = new MonoThreadServer(client);
                 serverList.add(monoThreadServer);
                 fixedThreadPool.execute(monoThreadServer);

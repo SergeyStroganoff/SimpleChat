@@ -37,6 +37,8 @@ public class MonoThreadServer implements Runnable {
             sendMessage("GetNickName");
             nikNameClient = in.readUTF();
             stringBuilder.append("[").append(nikNameClient).append("]").append(" - ");
+
+
             while (!threadSocket.isClosed()) {
                 String inputMessage = in.readUTF();
                 if ("quit".equalsIgnoreCase(inputMessage) || "exit".equalsIgnoreCase(inputMessage)) {
@@ -68,7 +70,9 @@ public class MonoThreadServer implements Runnable {
     private void sendMessageForAllClient(String inputMessage) throws IOException {
         synchronized (MultiThreadServer.serverList) {
             for (MonoThreadServer monoThreadServer : MultiThreadServer.serverList) {
-                monoThreadServer.sendMessage(inputMessage); // Отослать принятое сообщение всем по списку
+                if (monoThreadServer != this) {
+                    monoThreadServer.sendMessage(inputMessage); // Отослать принятое сообщение всем по списку
+                }
             }
         }
     }

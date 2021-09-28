@@ -38,7 +38,6 @@ public class Client {
 
             while (!socket.isOutputShutdown()) {
                 if (dataInputStream.available() > 0) {
-                    System.out.println("Есть поток");
                     String inputStringFromServer = dataInputStream.readUTF();
                     if ("GetNickName".equals(inputStringFromServer)) {
                         userInterface.showUserMessage("От сервера поступил запрос: " + inputStringFromServer);
