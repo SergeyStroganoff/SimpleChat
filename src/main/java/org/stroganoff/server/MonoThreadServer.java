@@ -28,6 +28,10 @@ public class MonoThreadServer implements Runnable {
         return nikNameClient;
     }
 
+    public DataOutputStream getOut() {
+        return out;
+    }
+
     @Override
     public void run() {
         try {
@@ -80,7 +84,6 @@ public class MonoThreadServer implements Runnable {
 
     private void sendMessage(String inputMessage) throws IOException {
         out.writeUTF(inputMessage);
-        logger.debug("Server Wrote message to client " + inputMessage);
         out.flush();
     }
 }

@@ -30,6 +30,10 @@ public class MultiThreadServer {
         this.portNumber = portNumber;
     }
 
+    public static List<MonoThreadServer> getServerList() {
+        return serverList;
+    }
+
     public void startServer() {
 
         try (ServerSocket server = new ServerSocket(portNumber);
