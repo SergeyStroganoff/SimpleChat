@@ -17,7 +17,7 @@ public class MonoThreadServer implements Runnable {
     private DataOutputStream out;
     private DataInputStream in;
     private String nikNameClient;
-    private History history;
+    private final History history;
 
     public MonoThreadServer(Socket threadSocket, History history) {
         this.threadSocket = threadSocket;
