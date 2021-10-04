@@ -16,7 +16,7 @@ public class Client {
     public static final String CLIENT_GOT_THE_MESSAGE = "Client got the message: ";
     private final Logger logger = Logger.getLogger(Client.class);
     private final String nickName;
-    private final IUserInterface userInterface = new UserInterface();
+    private final IUserInterface userInterface;
     private final IMessenger iMessenger;
     private final Socket socket;
     private final DataOutputStream dataOutputStream;
@@ -25,19 +25,20 @@ public class Client {
 
 
     public Client(Socket socket, DataOutputStream dataOutputStream, DataInputStream dataInputStream, BufferedReader reader,
-                  String nickName, IMessenger iMessenger) {
+                  String nickName, IMessenger iMessenger, IUserInterface userInterface) {
         this.socket = socket;
         this.dataOutputStream = dataOutputStream;
         this.dataInputStream = dataInputStream;
         this.nickName = nickName;
         this.iMessenger = iMessenger;
         this.reader = reader;
+        this.userInterface = userInterface;
     }
 
     public void clientStart() {
         try {
             if (socket == null) {
-                throw new IOException("Подключение не состоялось");
+                //   throw new IOException("Подключение не состоялось");
             }
             logger.info(CLIENT_SUCCESSFULLY_CONNECTED_MESSAGE);
             userInterface.showUserMessage(CLIENT_SUCCESSFULLY_CONNECTED_MESSAGE);
@@ -52,7 +53,6 @@ public class Client {
                         userInterface.showUserMessage(inputStringFromServer);
                     }
                 }
-
                 if (reader.ready()) {
                     String clientCommand = reader.readLine();
                     iMessenger.sendMessage(dataOutputStream, clientCommand);

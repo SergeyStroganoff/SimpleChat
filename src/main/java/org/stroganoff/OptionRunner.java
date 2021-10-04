@@ -49,7 +49,7 @@ public class OptionRunner {
                         userInterface.showErrorMessage(e.getMessage());
                     }
                     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                    Client client = new Client(socket, dataOutputStream, dataInputStream, reader, userNickName, iMessenger);
+                    Client client = new Client(socket, dataOutputStream, dataInputStream, reader, userNickName, iMessenger, userInterface);
                     client.clientStart();
                     break;
                 }
