@@ -1,7 +1,7 @@
 package org.stroganoff;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.stroganoff.util.IMessenger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -31,10 +32,13 @@ class OptionRunnerTest {
     @Mock
     Properties properties;
 
+    @Mock
+    IMessenger iMessenger;
+
     @InjectMocks
     OptionRunner optionRunner;
 
-    @BeforeAll
+    @BeforeEach
     void setSystemIn() {
         String exitCommand = "exit";
         InputStream is = new ByteArrayInputStream(exitCommand.getBytes());
@@ -48,7 +52,7 @@ class OptionRunnerTest {
         reader = Mockito.mock(BufferedReader.class);
     }
 
-    @AfterAll
+    @AfterEach
     void afterTests() {
         System.setOut(oldStream);
     }
@@ -60,7 +64,7 @@ class OptionRunnerTest {
         Mockito.when(properties.getProperty("port")).thenReturn("1212");
         String expected = SERVER_START_STRING + "\r\n" + "Для выхода введите - exit" + "\r\n";
         // WHEN
-        optionRunner.optionRun(userInterface, properties, reader);
+        optionRunner.optionRun(userInterface, properties, reader, iMessenger);
         // THEN
         Mockito.verify(properties, Mockito.times(1)).getProperty("port");
         Mockito.verify(userInterface, Mockito.times(1)).getStringFromUser(reader);
@@ -75,7 +79,7 @@ class OptionRunnerTest {
         Mockito.when(properties.getProperty("port")).thenReturn("1212");
         String expected = "Произошла ошибка: Connection refused: connect" + "\r\n";
         // WHEN
-        optionRunner.optionRun(userInterface, properties, reader);
+        optionRunner.optionRun(userInterface, properties, reader, iMessenger);
         // THEN
         Mockito.verify(properties, Mockito.times(1)).getProperty("port");
         Mockito.verify(userInterface, Mockito.times(2)).getStringFromUser(reader);
@@ -90,7 +94,7 @@ class OptionRunnerTest {
         Mockito.when(properties.getProperty("port")).thenReturn("1212");
         String expected = OptionRunner.EXIT_MESSAGE + "\r\n";
         // WHEN
-        optionRunner.optionRun(userInterface, properties, reader);
+        optionRunner.optionRun(userInterface, properties, reader, iMessenger);
         // THEN
         String actualString = bos.toString(StandardCharsets.UTF_8);
         Mockito.verify(userInterface, Mockito.times(1)).showUserMessage(Mockito.any());

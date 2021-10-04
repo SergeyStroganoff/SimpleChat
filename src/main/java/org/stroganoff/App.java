@@ -2,6 +2,8 @@ package org.stroganoff;
 
 import org.apache.log4j.Logger;
 import org.stroganoff.exception.PropertiesException;
+import org.stroganoff.util.IMessenger;
+import org.stroganoff.util.Messenger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,8 +31,9 @@ public class App {
         }
         userInterface.showUserMessage(USER_FIRST_MESSAGE);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        IMessenger iMessenger = new Messenger();
         OptionRunner optionRunner = new OptionRunner();
-        optionRunner.optionRun(userInterface, properties, bufferedReader);
+        optionRunner.optionRun(userInterface, properties, bufferedReader, iMessenger);
     }
 
 

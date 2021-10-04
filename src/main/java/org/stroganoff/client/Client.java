@@ -3,6 +3,7 @@ package org.stroganoff.client;
 import org.apache.log4j.Logger;
 import org.stroganoff.IUserInterface;
 import org.stroganoff.UserInterface;
+import org.stroganoff.util.IMessenger;
 
 import java.io.*;
 import java.net.Socket;
@@ -15,12 +16,14 @@ public class Client {
     private final Logger logger = Logger.getLogger(Client.class);
     private final String nickName;
     private final IUserInterface userInterface = new UserInterface();
+    private IMessenger iMessenger;
 
 
-    public Client(String host, int portNumber, String nickName) {
+    public Client(String host, int portNumber, String nickName, IMessenger iMessenger) {
         this.host = host;
         this.portNumber = portNumber;
         this.nickName = nickName;
+        this.iMessenger = iMessenger;
     }
 
     public Client(int portNumber, String nickName) {
@@ -41,7 +44,7 @@ public class Client {
                     String inputStringFromServer = dataInputStream.readUTF();
                     if ("GetNickName".equals(inputStringFromServer)) {
                         logger.debug(CLIENT_GOT_THE_MESSAGE + inputStringFromServer);
-                        sendMessage(dataOutputStream, nickName);
+                        iMessenger.sendMessage(dataOutputStream, nickName);
                     } else {
                         userInterface.showUserMessage(inputStringFromServer);
                     }
@@ -49,7 +52,7 @@ public class Client {
 
                 if (reader.ready()) {
                     String clientCommand = reader.readLine();
-                    sendMessage(dataOutputStream, clientCommand);
+                    iMessenger.sendMessage(dataOutputStream, clientCommand);
                     logger.debug("Client sent message " + clientCommand + " to server.");
                     Thread.sleep(500);
 
@@ -72,11 +75,6 @@ public class Client {
             logger.error("Ожидание потока прервано", e);
             userInterface.showErrorMessage(e.getMessage());
         }
-    }
-
-    private void sendMessage(DataOutputStream dataOutputStream, String message) throws IOException {
-        dataOutputStream.writeUTF(message);
-        dataOutputStream.flush();
     }
 }
 

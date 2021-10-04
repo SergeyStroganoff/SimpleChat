@@ -3,6 +3,7 @@ package org.stroganoff.server;
 import org.apache.log4j.Logger;
 import org.stroganoff.IUserInterface;
 import org.stroganoff.UserInterface;
+import org.stroganoff.util.IMessenger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,9 +26,11 @@ public class MultiThreadServer {
     private final int portNumber;
     private final IUserInterface userInterface = new UserInterface();
     private final History history = new HistoryManager();
+    IMessenger iMessenger;
 
-    public MultiThreadServer(int portNumber) {
+    public MultiThreadServer(int portNumber, IMessenger iMessenger) {
         this.portNumber = portNumber;
+        this.iMessenger = iMessenger;
     }
 
     public static List<MonoThreadServer> getServerList() {
@@ -46,7 +49,7 @@ public class MultiThreadServer {
             while (!server.isClosed()) {
                 Socket client = server.accept();
                 logger.debug("We have got a client connection" + client.getInetAddress());
-                MonoThreadServer monoThreadServer = new MonoThreadServer(client, history);
+                MonoThreadServer monoThreadServer = new MonoThreadServer(client, history, iMessenger);
                 serverList.add(monoThreadServer);
                 fixedThreadPool.execute(monoThreadServer);
                 logger.info(CONNECTION_ACCEPTED_MESSAGE + client.getInetAddress().getHostAddress());
