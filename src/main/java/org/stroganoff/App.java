@@ -1,6 +1,7 @@
 package org.stroganoff;
 
 import org.apache.log4j.Logger;
+import org.stroganoff.exception.OptionRunnerException;
 import org.stroganoff.exception.PropertiesException;
 import org.stroganoff.util.IMessenger;
 import org.stroganoff.util.Messenger;
@@ -16,7 +17,7 @@ public class App {
     public static final String USER_FIRST_MESSAGE = "Введите 1 для запуска сервера, 2 для запуска клиента -'q' для выхода";
     public static final String ERROR_MESSAGE = "Программа будет завершена";
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, OptionRunnerException {
         IUserInterface userInterface = new UserInterface();
         Initializer initializer = new Initializer();
         Properties properties = null;

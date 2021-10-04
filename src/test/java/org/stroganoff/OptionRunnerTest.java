@@ -1,14 +1,12 @@
 package org.stroganoff;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.stroganoff.exception.OptionRunnerException;
 import org.stroganoff.util.IMessenger;
 
 import java.io.*;
@@ -58,7 +56,7 @@ class OptionRunnerTest {
     }
 
     @Test
-    void whenOptionRun_userCommand_Is_1_Then_ServerStarts() {
+    void whenOptionRun_userCommand_Is_1_Then_ServerStarts() throws OptionRunnerException {
         // GIVEN
         Mockito.when(userInterface.getStringFromUser(reader)).thenReturn("1");
         Mockito.when(properties.getProperty("port")).thenReturn("1212");
@@ -73,11 +71,11 @@ class OptionRunnerTest {
     }
 
     @Test
-    void whenOptionRun_userCommand_Is_2_Then_ClientStarts() {
+    void whenOptionRun_userCommand_Is_2_Then_ClientStarts() throws OptionRunnerException {
         // GIVEN
         Mockito.when(userInterface.getStringFromUser(reader)).thenReturn("2");
         Mockito.when(properties.getProperty("port")).thenReturn("1212");
-        String expected = "Произошла ошибка: Connection refused: connect" + "\r\n";
+        String expected = "Произошла ошибка: Подключение не состоялось" + "\r\n";
         // WHEN
         optionRunner.optionRun(userInterface, properties, reader, iMessenger);
         // THEN
@@ -88,16 +86,14 @@ class OptionRunnerTest {
     }
 
     @Test
-    void whenOptionRun_userCommand_Is_q_Then_ShowUserMessageAndExit() {
+    void whenOptionRun_userCommand_Is_q_Then_ShowUserMessageAndExit() throws OptionRunnerException {
         // GIVEN
         Mockito.when(userInterface.getStringFromUser(reader)).thenReturn("q");
         Mockito.when(properties.getProperty("port")).thenReturn("1212");
         String expected = OptionRunner.EXIT_MESSAGE + "\r\n";
         // WHEN
-        optionRunner.optionRun(userInterface, properties, reader, iMessenger);
-        // THEN
-        String actualString = bos.toString(StandardCharsets.UTF_8);
-        Mockito.verify(userInterface, Mockito.times(1)).showUserMessage(Mockito.any());
-        assertEquals(expected, actualString);
+        Assertions.assertThrows(OptionRunnerException.class, () -> optionRunner.optionRun(userInterface, properties, reader, iMessenger));
+        // THEN exception trowed
+
     }
 }
