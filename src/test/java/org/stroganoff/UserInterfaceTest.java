@@ -10,14 +10,14 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class UserInterfaceTest {
     public static final String TEST_STRING = "TEST String";
-    public static final String TEST_ERROR_STRING = "Произошла ошибка";
+    public static final String TEST_ERROR_STRING = "Произошла ошибка: ";
     @InjectMocks
     UserInterface userInterface;
 
@@ -36,32 +36,32 @@ class UserInterfaceTest {
     @Test
     void showOutputMessage_System_out_PrintLn_Used() {
         // GIVEN
-        byte[] expected = TEST_STRING.getBytes();
+        String expected = TEST_STRING + "\r\n";
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(bos, true);
         PrintStream oldStream = System.out;
         System.setOut(printStream);
         // WHEN
-        userInterface.showUserMessage("");
-        byte[] actualString = TEST_STRING.getBytes();
-        // THEN
-        assertArrayEquals(expected, actualString);
+        userInterface.showUserMessage(TEST_STRING);
+        String actual = bos.toString(StandardCharsets.UTF_8);
         System.setOut(oldStream);
+        // THEN
+        assertEquals(expected, actual);
     }
 
     @Test
     void showErrorMessage_System_out_PrintLn_Used() {
         // GIVEN
-        byte[] expected = TEST_ERROR_STRING.getBytes();
+        String expected = TEST_ERROR_STRING + "\r\n";
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(bos, true);
         PrintStream oldStream = System.out;
         System.setOut(printStream);
         // WHEN
         userInterface.showErrorMessage("");
-        byte[] actualString = TEST_ERROR_STRING.getBytes();
-        // THEN
-        assertArrayEquals(expected, actualString);
+        String actual = bos.toString(StandardCharsets.UTF_8);
         System.setOut(oldStream);
+        // THEN
+        assertEquals(expected, actual);
     }
 }

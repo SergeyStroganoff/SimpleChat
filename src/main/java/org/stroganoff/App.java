@@ -11,7 +11,7 @@ import java.util.Properties;
 public class App {
     public static final Logger logger = Logger.getLogger(App.class);
     public static final String FILE_PROP_ERROR_USER = "файл настроек отсутствует или поврежден";
-    public static final String USER_FIRST_MESSAGE = "Введите 1 для запуска сервера и 2 для запуска клиента";
+    public static final String USER_FIRST_MESSAGE = "Введите 1 для запуска сервера, 2 для запуска клиента -'q' для выхода";
     public static final String ERROR_MESSAGE = "Программа будет завершена";
 
     public static void main(String[] args) throws InterruptedException {
